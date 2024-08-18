@@ -1,0 +1,34 @@
+{
+    "models": {
+        "tf-cats-vs-dogs": {
+            "name": "Cats vs Dogs - TF",
+            "description": "Cats vs Dogs Classifier",
+            "service": "http://0.0.0.0:8002/predict",
+            "type": "tensorflow"
+        },
+        "tf-mnist": {
+            "name": "Mnist Digits",
+            "description": "Mnist Digits Classifier",
+            "service": "http://0.0.0.0:8003/predict",
+            "type": "tensorflow"
+        },
+        "torch-cats-vs-dogs": {
+            "name": "Cats vs Dogs - Pytorch",
+            "description": "Mnist Digits Classifier",
+            "service": "http://0.0.0.0:8004/predict",
+            "type": "pytorch"
+        }
+    },
+    "libraries": {
+        "tf-explain": {
+            "name": "tf-explain",
+            "description": "Tf Explain",
+            "type": "tensorflow"
+        },
+        "pytorch-grad-cam": {
+            "name": "pytorch-grad-cam",
+            "description": "Pytorch Grad Cam",
+            "type": "pytorch"
+        }
+    }
+}
