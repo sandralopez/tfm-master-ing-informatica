@@ -1,30 +1,25 @@
 from PIL import Image
-from app.schemas import Prediction
-import numpy as np
-from tensorflow.keras.preprocessing.image import img_to_array, load_img
+from app.schemas import PredictionToExplain
+from tensorflow.keras.preprocessing.image import img_to_array
+from fastapi import UploadFile, File
+import numpy as np 
 
-def preprocess_image(image: Image.Image):
+def preprocess_image(file: UploadFile = File(...)):
     img_width, img_height = 28, 28
 
-    image = image.resize((img_width, img_height))
+    image = Image.open(file.file)
     image = image.convert('L')
+    image = image.resize((img_width, img_height))
     image = img_to_array(image)
-    image = np.expand_dims(image, axis=0)
     image /= 255.0
 
     return image
 
-def predict_image(file, model):
-    img = Image.open(file.file)
+def predict_image(model, processed_image):
+    prediction = model.predict(processed_image)[0]
 
-    img_array = preprocess_image(img)
+    index = np.argmax(prediction)
 
-    prediction = model.predict(img_array)
+    confidence = prediction[index]
 
-    predicted_class_index = np.argmax(prediction)
-
-    label = str(predicted_class_index)
-    confidence = round(prediction[0][predicted_class_index], 2)
-    confidence = str(confidence)
-
-    return Prediction(label=label, confidence=confidence)
+    return PredictionToExplain(label=str(index), label_index=index, confidence=confidence)
