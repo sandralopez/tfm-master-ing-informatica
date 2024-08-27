@@ -16,14 +16,15 @@ def preprocess_image(file: UploadFile = File(...)):
 def predict_image(model, processed_image):
     prediction = model.predict(processed_image)[0]
     prediction = float(prediction)
+    prediction = round(prediction, 2)
 
     if prediction > 0.5:
         label = "Perro"
         label_index = 1
-        confidence = round(prediction)
+        confidence = prediction
     else:
         label = "Gato"
         label_index = 0
-        confidence = round(1 - prediction, 2)
+        confidence = 1 - prediction
 
     return PredictionToExplain(label=label, label_index=label_index, confidence=confidence)
