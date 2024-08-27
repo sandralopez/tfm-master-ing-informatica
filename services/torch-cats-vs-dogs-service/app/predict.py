@@ -1,9 +1,9 @@
+import cv2
+import numpy as np
 from PIL import Image
 from app.schemas import Prediction
 from torchvision import transforms
 from fastapi import UploadFile, File
-import cv2
-import numpy as np
 from io import BytesIO
 
 img_width, img_height = 150, 150
@@ -12,7 +12,7 @@ async def preprocess_image(file: UploadFile = File(...)):
     contents = await file.read()
 
     image = Image.open(BytesIO(contents))
-    
+
     preprocess = transforms.Compose([
         transforms.Resize((img_height, img_width), interpolation=Image.NEAREST),
         transforms.ToTensor()
@@ -26,12 +26,14 @@ async def preprocess_image(file: UploadFile = File(...)):
 
 def predict_image(model, processed_image):
     prediction = model(processed_image)
+    prediction = prediction.item()
+    prediction = round(prediction, 2)
 
-    if prediction.item() >= 0.5:
+    if prediction >= 0.5:
         label = "Perro"
+        confidence = prediction
     else:
         label = "Gato"
-
-    confidence = prediction.item()
+        confidence = 1 - prediction
 
     return Prediction(label=label, confidence=confidence)

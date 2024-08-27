@@ -1,11 +1,12 @@
 import os
+import numpy as np
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form
 from dotenv import load_dotenv
 from app.models import load_model
 from app.predict import predict_image, preprocess_image
 from app.schemas import PredictionResponse, Prediction
 from explainer_lib import Explainer
-import numpy as np 
+from explainer_lib.constants import CUSTOM_MODEL
 
 load_dotenv()
 
@@ -32,7 +33,7 @@ async def predict( library_name : str = Form(...), file: UploadFile = File(...))
             library_name = library_name,
             model = model,
             processed_image = processed_image,
-            extra_params = { "label_index" : prediction.label_index }
+            extra_params = { "label_index" : prediction.label_index, "model_type": CUSTOM_MODEL }
         )
 
         # Aplicar la librería de explicabilidad
