@@ -42,12 +42,10 @@ async def predict(model_name: str = Form(...), library_name: str = Form(...), fi
     async with httpx.AsyncClient() as client:
         response = await client.post(model["service"], data={"library_name" : library_name}, files={"file": (file.filename, file.file)})
 
+    response_dict = json.loads(response.content)
+
     # Devolver la respuesta del servicio
-    return Response(
-        status_code=response.status_code,
-        content=response.content,
-        media_type=response.headers['Content-Type']
-    )
+    return JSONResponse(status_code=response.status_code, content=response_dict)
 
 # Obtener el listado de modelos
 @app.get('/models', tags=['models'], response_model=List[FrontModel], status_code=200)
@@ -57,7 +55,8 @@ def get_models(x_api_key: str = Header(...)):
         raise HTTPException(status_code=401, detail="Acceso no autorizado: clave API incorrecta")
 
     models = [
-        FrontModel(name=elem["name"], description=elem["description"], type=elem['type'])
+        FrontModel(id=elem["id"], name=elem["name"], description=elem["description"], type=elem['type'], library=elem["library"])
+
         for elem in config["models"].values()
     ]
 
@@ -73,7 +72,8 @@ def get_libraries(x_api_key: str = Header(...)):
         raise HTTPException(status_code=401, detail="Acceso no autorizado: clave API incorrecta")
 
     libraries = [
-        FrontLibrary(name=elem["name"], description=elem["description"],type=elem['type'])
+        FrontLibrary(id=elem["id"], name=elem["name"], description=elem["description"],type=elem['type'])
+
         for elem in config["libraries"].values()
     ]
 
