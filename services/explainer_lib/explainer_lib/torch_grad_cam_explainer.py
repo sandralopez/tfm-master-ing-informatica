@@ -1,10 +1,10 @@
 import io
-from PIL import Image
-from .explainer_base import Explainer 
-from pytorch_grad_cam import GradCAM
-from pytorch_grad_cam.utils.image import show_cam_on_image
 import torch.nn as nn
 import base64
+from PIL import Image
+from pytorch_grad_cam import GradCAM
+from pytorch_grad_cam.utils.image import show_cam_on_image
+from .explainer_base import Explainer
 
 def explainer_grad_cam_pytorch_grad_cam(explainer: Explainer):
     model = explainer.model 
@@ -29,7 +29,7 @@ def explainer_grad_cam_pytorch_grad_cam(explainer: Explainer):
     # Convertir a imagen
     image = Image.fromarray(cam_image)
 
-    # Guardar la imagen en un objeto BytesIO
+    # Guardar la imagen en formato jpeg y convertir a base64
     buf = io.BytesIO()
     image.save(buf, format='JPEG')
     buf.seek(0)
