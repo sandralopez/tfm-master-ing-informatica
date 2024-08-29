@@ -37,6 +37,8 @@ export default async function handler(req, res) {
       try {
         const response = await axios.post(`${process.env.API_HOST}/predict`, formData, { headers: headers });
 
+        response.data.originalImage = fileBuffer.toString('base64');;
+
         res.status(response.status).json(response.data);
       } catch (error) {
         res.status(500).json({ error: error });

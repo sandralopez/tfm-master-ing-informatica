@@ -10,6 +10,7 @@ export const FormClient = ({ models, libraries }) => {
 	const [isFormValid, setIsFormValid] = useState(false);
 	const [resultData, setResultData] = useState([])
 	const [isAccordionOpen, setIsAccordionOpen] = useState([]);
+	const [dragging, setDragging] = useState(false);
 
 	const handleModelChange = (e) => {
 		const selectedModel = e.target.value;
@@ -28,7 +29,39 @@ export const FormClient = ({ models, libraries }) => {
 	};
 
 	const handleFileChange = (e) => {
-		setFile(e.target.files[0]);
+		const selectedFile = e.target.files[0];
+
+		if (selectedFile) {
+			setFile(e.target.files[0]);
+		}
+	};
+
+	const handleDragLeave = (e) => {
+		e.preventDefault();
+
+		setDragging(false);
+	};
+
+	const handleDragOver = (e) => {
+		e.preventDefault();
+
+		setDragging(true);
+	};
+
+	const handleDrop = (e) => {
+		e.preventDefault();
+
+		setDragging(false);
+
+		// Considerar sólo un archivo
+		const droppedItem = e.dataTransfer.items[0];
+
+		if (droppedItem) {
+			if (droppedItem.kind === "file") {
+				const file = droppedItem.getAsFile();
+				setFile(file);
+			}
+		}
 	};
 
 	const handleSubmit = async (e) => {
@@ -51,7 +84,7 @@ export const FormClient = ({ models, libraries }) => {
 			const data = await response.json();
 
 			setResultData([...resultData, data]);
-			setIsAccordionOpen([...isAccordionOpen, false]);
+			setIsAccordionOpen([...isAccordionOpen, true]);
 		}
 		catch(error) {
 			console.log('Error: ', error);
@@ -108,25 +141,36 @@ export const FormClient = ({ models, libraries }) => {
 					</div>
 					<div className="sm:col-span-4"> 
 						<label className="block">Selecciona una imagen</label>
-						<div className="mt-2.5 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+						<div 
+							onDragLeave={handleDragLeave}
+							onDragOver={handleDragOver}
+							onDrop={handleDrop}
+							className={`mt-2.5 flex justify-center rounded-lg border border-dashed px-6 py-10 ${dragging ? 'border-violet-700 bg-violet-50' : 'border-gray-900 bg-white'}`}
+						>
 							<div className="text-center">
-								<div className="mt-4 flex text-sm leading-6 text-gray-600">
-									<label
-										htmlFor="file-upload"
-										className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-									>
-										<span>Sube un archivo</span>
-										<input 
-											id="file-upload" 
-											name="file-upload" 
-											type="file" 
-											className="sr-only"
-											onChange={handleFileChange}
-										/>
-									</label>
-									<p className="pl-1">o arrástralo</p>
-								</div>
-								<p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+								{file ? (
+									<span className="text-sm leading-6 text-gray-600">Archivo seleccionado: {file.name}</span>
+								) : (
+									<>
+										<div className="mt-4 flex text-sm leading-6 text-gray-600">
+											<label
+												htmlFor="file-upload"
+												className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+											>
+												<span>Sube un archivo</span>
+												<input
+													id="file-upload"
+													name="file-upload"
+													type="file"
+													className="sr-only"
+													onChange={handleFileChange}
+												/>
+											</label>
+											<p className="pl-1">o arrástralo</p>
+										</div>
+										<p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF hasta 10MB</p>
+									</>
+								)}
 							</div>
 						</div>
 					</div>
@@ -165,8 +209,14 @@ export const FormClient = ({ models, libraries }) => {
 												</div>
 											</div>
 											<div className="w-full mt-4">
-												<img id="prevImage" className="mx-auto" src="" />
-												<img id="resultImage" className="mx-auto" src={`data:image/jpg;base64,${data.image}`} />
+												<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+													<div>
+														<img id="prevImage" src={`data:image/jpg;base64,${data.originalImage}`} />
+													</div>
+													<div>
+														<img id="resultImage" src={`data:image/jpg;base64,${data.image}`} />
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
