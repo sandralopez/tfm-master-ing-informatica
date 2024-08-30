@@ -1,6 +1,8 @@
 import { Description } from "../components/shared/Description";
 import { FormServer } from "../components/home/FormServer";
 
+export const revalidate = 60;
+
 export default function Home() {
   return (
     <main>

@@ -209,7 +209,7 @@ export const FormClient = ({ models, libraries }) => {
 												</div>
 											</div>
 											<div className="w-full mt-4">
-												<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+												<div className="grid grid-cols-1 sm:grid-cols-2 place-items-center sm:place-items-start gap-6">
 													<div>
 														<img id="prevImage" src={`data:image/jpg;base64,${data.originalImage}`} />
 													</div>

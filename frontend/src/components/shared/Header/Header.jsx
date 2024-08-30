@@ -1,6 +1,11 @@
+"use client"
+
 import Link from 'next/link'
+import { useState } from 'react';
 
 export const Header = () => {
+	const [isOpened, setIsOpened] = useState(false);
+
 	return (
 	  <nav className="bg-gray-50 shadow-inner">
 	    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -14,7 +19,13 @@ export const Header = () => {
 	          </div>
 	        </div>
 	        <div className="-mr-2 flex md:hidden">
-	          <button type="button" className="relative inline-flex items-center justify-center rounded-md bg-violet-200 p-2 text-violet-700 hover:bg-violet-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" aria-controls="mobile-menu" aria-expanded="false">
+	          <button
+				type="button"
+				className="relative inline-flex items-center justify-center rounded-md bg-violet-200 p-2 text-violet-700 hover:bg-violet-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+				aria-controls="mobile-menu"
+				aria-expanded="false"
+				onClick={() => setIsOpened(!isOpened)}
+	          >
 	            <span className="absolute -inset-0.5"></span>
 	            <span className="sr-only">Abrir menú</span>
 	            <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
@@ -27,12 +38,16 @@ export const Header = () => {
 	        </div>
 	      </div>
 	    </div>
-	    <div className="md:hidden" id="mobile-menu">
-	      <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-	        <Link href="/" className="block rounded-md bg-gray-50 px-3 py-2 text-base font-medium text-white" aria-current="page">Inicio</Link>
-	        <Link href="/about" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Acerca de</Link>
-	      </div>
-	    </div>
+	    {
+			isOpened && (
+			    <div className="md:hidden" id="mobile-menu">
+			      <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+			        <Link href="/" className="block rounded-md px-3 py-2 text-base font-medium text-gray-500 hover:bg-violet-500 hover:text-white" aria-current="page">Inicio</Link>
+			        <Link href="/about" className="block rounded-md px-3 py-2 text-base font-medium text-gray-500 hover:bg-violet-500 hover:text-white">Acerca de</Link>
+			      </div>
+			    </div>
+			)
+	    }
 	  </nav>
 	)
 }
