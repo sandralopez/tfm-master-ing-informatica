@@ -33,7 +33,7 @@ async def predict( library_name : str = Form(...), file: UploadFile = File(...))
             library_name = library_name,
             model = model,
             processed_image = processed_image,
-            extra_params = { "label_index": 0, "model_type": RESNET_50 }
+            extra_params = { "label_index": prediction.label_index, "model_type": RESNET_50 }
         )
 
         # Aplicar la librería de explicabilidad

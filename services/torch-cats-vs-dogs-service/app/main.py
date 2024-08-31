@@ -31,7 +31,7 @@ async def predict( library_name : str = Form(...), file: UploadFile = File(...))
             library_name = library_name,
             model = model,
             processed_image = processed_image,
-            extra_params = { "rgb_image" : rgb_image }
+            extra_params = { "label_index": prediction.label_index, "rgb_image" : rgb_image }
         )
 
         # Aplicar la librería de explicabilidad

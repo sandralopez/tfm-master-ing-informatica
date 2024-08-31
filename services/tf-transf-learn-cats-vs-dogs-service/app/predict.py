@@ -3,6 +3,7 @@ from app.schemas import PredictionToExplain
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.applications.resnet import preprocess_input
 from fastapi import UploadFile, File
+import numpy as np
 
 def preprocess_image(file: UploadFile = File(...)):
     img_width, img_height = 224, 224
@@ -16,16 +17,14 @@ def preprocess_image(file: UploadFile = File(...)):
 
 def predict_image(model, processed_image):
     prediction = model.predict(processed_image)[0]
-    prediction = float(prediction)
-    prediction = round(prediction, 2)
 
-    if prediction > 0.5:
-        label = "Perro"
-        label_index = 1
-        confidence = prediction
+    index = np.argmax(prediction)
+
+    confidence = round(prediction[index], 2)
+
+    if index == 0:
+        label = 'Gato'
     else:
-        label = "Gato"
-        label_index = 0
-        confidence = 1 - prediction
+        label = 'Perro'
 
-    return PredictionToExplain(label=label, label_index=label_index, confidence=confidence)
+    return PredictionToExplain(label=label, label_index=index, confidence=confidence)
