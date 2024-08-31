@@ -1,10 +1,7 @@
 import io 
 import base64
-import numpy as np
-import tensorflow as tf
-from tensorflow.keras.layers import Dense, GlobalMaxPooling2D, Conv2D
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.applications import ResNet50
+import cv2
+from tensorflow.keras.layers import Conv2D
 from PIL import Image
 from tf_explain.core.grad_cam import GradCAM
 from .explainer_base import Explainer
@@ -18,19 +15,7 @@ def explainer_grad_cam_tf_explain(explainer: Explainer):
 
 	# Obtener la última capa convolucional del modelo
 	if model_type == RESNET_50:
-		resnet50_model = model.get_layer("resnet50")
-		resnet50_input = resnet50_model.input
-
-		# Obtener la última capa convolucional de Resnet50
-		last_conv_layer = resnet50_model.get_layer("conv5_block3_out").output
-
-		# Crear un modelo que tenga como salida la última capa convolucional
-		# Esto lo utilizaremos para poder utilizar su última capa para explain
-		conv_model = Model(inputs=resnet50_input, outputs=last_conv_layer)
-
 		last_conv_layer_name = 'conv5_block3_out'
-
-		model = conv_model
 	elif model_type == CUSTOM_MODEL:
 		conv_layers = []
 
@@ -45,7 +30,7 @@ def explainer_grad_cam_tf_explain(explainer: Explainer):
 	# Aplicar la librería de explicabilidad
 	explainer = GradCAM()
 
-	grid = explainer.explain(([img], None), model, class_index=label_index, layer_name=last_conv_layer_name)
+	grid = explainer.explain(([img], None), model, class_index=label_index, layer_name=last_conv_layer_name, colormap=cv2.COLORMAP_JET)
 
 	# Convertir a imagen
 	image = Image.fromarray(grid)
