@@ -1,0 +1,20 @@
+name: Deploy to Droplet
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run docker-compose
+        working-directory: /home/app/test
+        run: |
+          docker-compose up -d
