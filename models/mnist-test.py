@@ -10,7 +10,7 @@ model = tf.keras.models.load_model(os.getenv('MODEL_PATH'))
 
 #%%
 # Cargar y preprocesar la imagen
-img_path = os.getenv('IMAGE_PATH')
+img_path = os.getenv('IMG_PATH')
 img_width, img_height = 28, 28
 img = image.load_img(img_path, color_mode='grayscale', target_size=(img_width, img_height))
 img_array = image.img_to_array(img)
