@@ -20,6 +20,6 @@ def predict_image(model, processed_image):
 
     index = np.argmax(prediction)
 
-    confidence = prediction[index]
+    confidence = float("{:.2f}".format(prediction[index], 2))
 
     return PredictionToExplain(label=str(index), label_index=index, confidence=confidence)

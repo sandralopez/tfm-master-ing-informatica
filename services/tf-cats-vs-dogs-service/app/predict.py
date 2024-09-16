@@ -19,7 +19,7 @@ def predict_image(model, processed_image):
 
     index = np.argmax(prediction)
 
-    confidence = round(prediction[index], 2)
+    confidence = float("{:.2f}".format(prediction[index], 2))
 
     if index == 0:
         label = 'Gato'

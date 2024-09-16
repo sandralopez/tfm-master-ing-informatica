@@ -37,6 +37,6 @@ def predict_image(model, processed_image):
     else:
         label = 'Perro'
 
-    confidence = round(confidence.item(), 2)
+    confidence = float("{:.2f}".format(confidence.item(), 2))
 
     return PredictionToExplain(label=label, label_index=index, confidence=confidence)
