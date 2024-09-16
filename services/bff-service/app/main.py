@@ -35,11 +35,28 @@ async def predict(model_name: str = Form(...), library_name: str = Form(...), fi
     if library_name not in config['libraries']:
         return JSONResponse(status_code=400, content={"message": "Librería no encontrada"})
 
+    if model_name not in config["models"]:
+        return JSONResponse(status_code=400, content={"message" : "El modelo seleccionado no existe"})
+
+    # Validar tipo y tamaño del archivo
+    MAX_FILE_SIZE = 5 * 1024 * 1024;
+    ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/gif", "png", "jpeg", "jpg", "gif"]
+
+    if file.content_type not in ALLOWED_TYPES:
+        return JSONResponse(status_code=400, content={"message" : "El archivo seleccionado debe ser una imagen en formato PNG, JPEG o GIF"})
+
+    file_size = await file.read()
+
+    if len(file_size) > MAX_FILE_SIZE:
+        return JSONResponse(status_code=400, content={"message" : "El tamaño de la imagen debe ser menor a 5MB"})
+
+    file.file.seek(0)
+
     # Obtener el modelo seleccionado
     model = config["models"][model_name]
 
     # Llamar al servicio correspondiente
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=60.0) as client:
         response = await client.post(model["service"], data={"library_name" : library_name}, files={"file": (file.filename, file.file)})
 
     response_dict = json.loads(response.content)
