@@ -13,5 +13,5 @@ setup(
         "tf-explain",
         "grad-cam"
     ],
-    python_requires='>=3.10',
+    python_requires='>=3.9',
 )
