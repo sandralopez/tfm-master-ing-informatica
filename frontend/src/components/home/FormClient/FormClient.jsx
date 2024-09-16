@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react';
+import { Message } from "../../shared/Message";
 
 export const FormClient = ({ models, libraries }) => {
 	const [selectedModel, setSelectedModel] = useState("");
@@ -11,13 +12,15 @@ export const FormClient = ({ models, libraries }) => {
 	const [resultData, setResultData] = useState([])
 	const [isAccordionOpen, setIsAccordionOpen] = useState([]);
 	const [dragging, setDragging] = useState(false);
+	const [errors, setErrors] = useState([]);
 
 	const handleModelChange = (e) => {
 		const selectedModel = e.target.value;
 
-		let modelLibrary = models.find(model => model.id == selectedModel);
-		let options = libraries.filter(library => library.id == modelLibrary?.library);
+		let modelLibrary = models?.find(model => model.id == selectedModel);
+		let options = libraries?.filter(library => library.id == modelLibrary?.library);
 
+		setErrors([]);
 		setSelectedModel(selectedModel);
 		setLibraryOptions(options);
 	};
@@ -25,14 +28,41 @@ export const FormClient = ({ models, libraries }) => {
 	const handleLibraryChange = (e) => {
 		const selectedLibrary = e.target.value;
 
+		setErrors([]);
 		setSelectedLibrary(selectedLibrary);
 	};
 
 	const handleFileChange = (e) => {
 		const selectedFile = e.target.files[0];
 
+		setErrors([]);
+
 		if (selectedFile) {
-			setFile(e.target.files[0]);
+			const maxSize = 5 * 1024 * 1024;
+			const allowedTypes = ['image/png', 'image/jpeg', 'image/gif'];
+
+			if (!allowedTypes.includes(selectedFile.type)) {
+				// Validar el formato de la imagen
+				setErrors((prevErrors) => ([
+					...prevErrors,
+					'El archivo seleccionado debe ser una imagen en formato PNG, JPEG o GIF',
+				]));
+
+				return;
+			}
+			else if (selectedFile.size > maxSize) {
+				// Validar el tamaño de la iamgen
+				setErrors((prevErrors) => ([
+					...prevErrors,
+					'El tamaño de la imagen debe ser menor a 5MB',
+				]));
+
+				return;
+			}
+			else {
+				setErrors([]);
+				setFile(e.target.files[0]);
+			}
 		}
 	};
 
@@ -67,8 +97,12 @@ export const FormClient = ({ models, libraries }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		let modelName = models.find(model => model.id == selectedModel).name;
-		let libraryName = libraries.find(library => library.id == selectedLibrary).name;
+	    if (!validate()) {
+	      return;
+	    }
+
+		let modelName = models?.find(model => model.id == selectedModel).name;
+		let libraryName = libraries?.find(library => library.id == selectedLibrary).name;
 
 		const formData = new FormData();
 		formData.append('model', modelName);
@@ -83,11 +117,16 @@ export const FormClient = ({ models, libraries }) => {
 
 			const data = await response.json();
 
-			setResultData([...resultData, data]);
-			setIsAccordionOpen([...isAccordionOpen, true]);
+			if (response.status === 200) {
+				setResultData([...resultData, data]);
+				setIsAccordionOpen([...isAccordionOpen, true]);
+			}
+			else {
+				setErrors([data.message])
+			}
 		}
 		catch(error) {
-			console.log('Error: ', error);
+			setErrors(['Ha ocurrido un error al enviar los datos: ' + error]);
 		}
 	};
 
@@ -95,18 +134,50 @@ export const FormClient = ({ models, libraries }) => {
 		setIsAccordionOpen(isAccordionOpen.map((item, i) => (i === index ? !item : item)));
 	};
 
+	const validate = () => {
+		const newErrors = [];
+
+		if (!selectedModel) {
+			newErrors.push('Debe seleccionar un modelo');
+		}
+
+		if (!selectedLibrary) {
+			newErrors.push('Debe seleccionar una biblioteca de explicabilidad');
+		}
+
+		if (!file) {
+			newErrors.push('Debe seleccionar una imagen');
+		}
+
+		setErrors(newErrors);
+
+		return newErrors.length > 0 ? false : true;
+	};
+
   return (
 	<>
 		<form
-		onSubmit={handleSubmit}
-
+			onSubmit={handleSubmit}
 		>
 			<div className="grid grid-cols-1 sm:grid-cols-2 gap-12">
 				<div>
+					{errors.length > 0 && (
+						<Message
+							type="error"
+							title="Error"
+							message={errors.map((error, index) => (
+										<span key={index}>
+											{error}
+											<br />
+										</span>
+									))}
+						/>
+					)}
 					<div className="sm:col-span-4">
 						<label className="block">Selecciona un modelo</label>
 						<select
 							id="model"
+							required
 							name="model"
 							onChange={handleModelChange}
 							className="w-full bg-white rounded-md border-0 my-2.5 py-2.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:text-sm sm:leading-6"
@@ -122,9 +193,13 @@ export const FormClient = ({ models, libraries }) => {
 						</select>
 					</div>
 					<div className="sm:col-span-4"> 
-						<label className="block">Selecciona una librería de explicabilidad</label>
+						<label className="block">
+							Selecciona una librería de explicabilidad&nbsp;&nbsp;
+							<span title="Los resultados se muestran como un mapa de calor que indica qué partes de la imagen son más importantes para la predicción del modelo, resaltando en colores más cálidos las áreas clave.">&#x2139;</span>
+						</label>
 						<select
 							id="library"
+							required
 							name="library"
 							onChange={handleLibraryChange}
 							className="w-full bg-white rounded-md border-0 my-2.5 py-2.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-violet-600 sm:text-sm sm:leading-6"
@@ -148,29 +223,34 @@ export const FormClient = ({ models, libraries }) => {
 							className={`mt-2.5 flex justify-center rounded-lg border border-dashed px-6 py-10 ${dragging ? 'border-violet-700 bg-violet-50' : 'border-gray-900 bg-white'}`}
 						>
 							<div className="text-center">
-								{file ? (
-									<span className="text-sm leading-6 text-gray-600">Archivo seleccionado: {file.name}</span>
-								) : (
-									<>
-										<div className="mt-4 flex text-sm leading-6 text-gray-600">
-											<label
-												htmlFor="file-upload"
-												className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-											>
-												<span>Sube un archivo</span>
-												<input
-													id="file-upload"
-													name="file-upload"
-													type="file"
-													className="sr-only"
-													onChange={handleFileChange}
-												/>
-											</label>
-											<p className="pl-1">o arrástralo</p>
-										</div>
-										<p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF hasta 10MB</p>
-									</>
+								{file && (
+									<p className="text-sm leading-6 text-gray-600">
+									Archivo seleccionado: {file.name}
+									</p>
 								)}
+								<div className="flex text-sm leading-6 text-gray-600 w-100">
+									<label
+										htmlFor="file-upload"
+										className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+									>
+										{file ? (
+											<span>Sube otro archivo</span>
+										) : (
+											<span>Sube un archivo</span>
+										)}
+
+										<input
+											id="file-upload"
+											required
+											name="file-upload"
+											type="file"
+											className="sr-only"
+											onChange={handleFileChange}
+										/>
+									</label>
+									<p className="pl-1">o arrástralo aquí</p>
+								</div>
+								<p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF hasta 10MB</p>
 							</div>
 						</div>
 					</div>
@@ -179,7 +259,6 @@ export const FormClient = ({ models, libraries }) => {
 						type="submit" 
 						className="rounded-2xl bg-violet-500 text-white py-2.5 px-3.5" 
 						value="Aplicar"
-						disabled={!(selectedModel && selectedLibrary && file)}
 					/>
 					</div>
 				</div> {/* Fin de la primera columna */}
@@ -204,7 +283,7 @@ export const FormClient = ({ models, libraries }) => {
 													<span className="pl-1">{data.prediction.label}</span>
 												</div>
 												<div>
-													<span className="pl-1  font-semibold">Confianza: </span>
+													<span className="pl-1  font-semibold">Probabilidad: </span>
 													<span className="pl-1">{data.prediction.confidence}</span>
 												</div>
 											</div>

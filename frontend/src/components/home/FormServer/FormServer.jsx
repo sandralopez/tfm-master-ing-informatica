@@ -1,6 +1,10 @@
 import { FormClient } from "../FormClient";
 
 const getModels = async () => {
+  if (process.env.SKIP_FETCH){
+    return [];
+  }
+
   const response = await fetch(`${process.env.API_HOST}/models`, {
     headers: new Headers({
       'x-api-key': process.env.API_KEY || ""
@@ -13,6 +17,10 @@ const getModels = async () => {
 }
 
 const getLibraries = async () => {
+  if (process.env.SKIP_FETCH){
+    return [];
+  }
+
   const response = await fetch(`${process.env.API_HOST}/libraries`, {
     headers: new Headers({
       'x-api-key': process.env.API_KEY || ""
@@ -22,20 +30,6 @@ const getLibraries = async () => {
   const data = await response.json()
 
   return data
-}
-
-const submitData = async (formData) => {
-    const response = await fetch(`${process.env.API_HOST}/predict`, {
-      headers: new Headers({
-        'x-api-key': process.env.API_KEY || ""
-      }),
-      method: 'POST',
-      body: formData
-    })
-
-    const data = await response.json()
-
-    return data
 }
 
 export async function FormServer() {

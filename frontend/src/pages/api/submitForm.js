@@ -37,14 +37,25 @@ export default async function handler(req, res) {
       try {
         const response = await axios.post(`${process.env.API_HOST}/predict`, formData, { headers: headers });
 
-        response.data.originalImage = fileBuffer.toString('base64');;
+        response.data.originalImage = fileBuffer.toString('base64');
 
         res.status(response.status).json(response.data);
-      } catch (error) {
-        res.status(500).json({ error: error });
+      }
+      catch (error) {
+        if (error.response) {
+          if (error.response.status === 400) {
+            res.status(error.response.status).json(error.response.data);
+          }
+          else {
+            res.status(error.response.status).json({message : "Ha ocurrido un error al procesar la petición"});
+          }
+        }
+        else {
+          res.status(500).json({ message: 'Ha ocurrido un error al procesar la petición'});
+        }
       }
     });
   } else {
-    res.status(405).json({ error: 'Método no permitido' });
+    res.status(405).json({ message: 'Método no permitido' });
   }
 }
