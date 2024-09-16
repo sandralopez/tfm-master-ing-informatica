@@ -1,0 +1,73 @@
+version: '3.0'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=
+      - API_KEY=
+      - API_HOST=
+    command: npm run start
+    depends_on:
+      - tfm_bff
+    restart: always
+  tfm_bff:
+    build:
+      context: ./services/bff-service
+      dockerfile: Dockerfile
+    image: bff:latest
+    container_name: tfm_bff
+    ports:
+      - "8000:8000"
+    environment:
+      - API_KEY=
+    restart: always
+  tf_cats_vs_dogs:
+    build:
+      context: ./services/tf-cats-vs-dogs-service
+      dockerfile: Dockerfile
+    image: tf-cats-vs-dogs:latest
+    container_name: tf_cats_vs_dogs
+    environment:
+      - MODEL_PATH=
+    restart: always
+  tf_mnist_digits:
+    build:
+      context: ./services/tf-mnist-digits-service
+      dockerfile: Dockerfile
+    image: tf-mnist-digits:latest
+    container_name: tf_mnist_digits
+    environment:
+      - MODEL_PATH=
+    restart: always
+  torch_cats_vs_dogs:
+    build:
+      context: ./services/torch-cats-vs-dogs-service
+      dockerfile: Dockerfile
+    image: torch-cats-vs-dogs:latest
+    container_name: torch_cats_vs_dogs
+    environment:
+      - MODEL_PATH=
+    restart: always
+  torch_mnist_digits:
+    build:
+      context: ./services/torch-mnist-digits-service
+      dockerfile: Dockerfile
+    image: torch-mnist-digits:latest
+    container_name: torch_mnist_digits
+    environment:
+      - MODEL_PATH=
+    restart: always
+  tf_transfer_learning_cats_vs_dogs:
+    build:
+      context: ./services/tf-transf-learn-cats-vs-dogs-service
+      dockerfile: Dockerfile
+    image: tf-transfer-learning-cats-vs-dogs:latest
+    container_name: tf_transfer_learning_cats_vs_dogs
+    environment:
+      - MODEL_PATH=
+    restart: always
