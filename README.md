@@ -73,4 +73,3 @@ Puedes seguir el desarrollo del proyecto en el tablero creado en [Github Project
 Gildenblat, J. (2021). pytorch-grad-cam. Repositorio de Github. Recuperado de: https://github.com/jacobgil/pytorch-grad-cam
 
 Meudec, R. (2021). tf-explain. Repositorio de Github. Recuperado de:  https://github.com/sicara/tf-explain
-
