@@ -1,0 +1,58 @@
+{
+    "models": {
+        "tf-cats-vs-dogs": {
+            "id": "1",
+            "name": "tf-cats-vs-dogs",
+            "description": "Cats vs Dogs Classifier",
+            "service": "http://tf_cats_vs_dogs:8000/predict",
+            "type": "tensorflow",
+            "library": "1"
+        },
+        "tf-mnist-digits": {
+            "id": "2",
+            "name": "tf-mnist-digits",
+            "description": "Mnist Digits Classifier",
+            "service": "http://tf_mnist_digits:8000/predict",
+            "type": "tensorflow",
+            "library": "1"
+        },
+        "torch-cats-vs-dogs": {
+            "id": "3",
+            "name": "torch-cats-vs-dogs",
+            "description": "Mnist Digits Classifier",
+            "service": "http://torch_cats_vs_dogs:8000/predict",
+            "type": "pytorch",
+            "library": "2"
+        },
+        "torch-mnist-digits": {
+            "id": "4",
+            "name": "torch-mnist-digits",
+            "description": "Mnist Digits Classifier",
+            "service": "http://torch_mnist_digits:8000/predict",
+            "type": "pytorch",
+            "library": "2"
+        },
+        "transfer-learning-cats-vs-dogs": {
+            "id": "5",
+            "name": "transfer-learning-cats-vs-dogs",
+            "description": "Cats vs Dogs Classifier with Transfer Learning Resnet50",
+            "service": "http://tf_transfer_learning_cats_vs_dogs:8000/predict",
+            "type": "tensorflow",
+            "library": "1"
+        }
+    },
+    "libraries": {
+        "tf-explain": {
+            "id": "1",
+            "name": "tf-explain",
+            "description": "Tf Explain",
+            "type": "tensorflow"
+        },
+        "pytorch-grad-cam": {
+            "id": "2",
+            "name": "pytorch-grad-cam",
+            "description": "Pytorch Grad Cam",
+            "type": "pytorch"
+        }
+    }
+}
