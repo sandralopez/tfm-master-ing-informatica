@@ -39,7 +39,7 @@ export const FormClient = ({ models, libraries }) => {
 		setErrors([]);
 
 		if (selectedFile) {
-			const maxSize = 5 * 1024 * 1024;
+			const maxSize = 10 * 1024 * 1024;
 			const allowedTypes = ['image/png', 'image/jpeg', 'image/gif'];
 
 			if (!allowedTypes.includes(selectedFile.type)) {
@@ -55,7 +55,7 @@ export const FormClient = ({ models, libraries }) => {
 				// Validar el tamaño de la iamgen
 				setErrors((prevErrors) => ([
 					...prevErrors,
-					'El tamaño de la imagen debe ser menor a 5MB',
+					'El tamaño de la imagen debe ser menor a 10MB',
 				]));
 
 				return;

@@ -23,3 +23,8 @@ jobs:
         working-directory: .
         run: |
           API_KEY=${{ secrets.API_KEY }} API_HOST=${{ secrets.API_HOST }} docker-compose up -d --build
+
+      - name: Cleanup dangling images
+        working-directory: .
+        run: |
+          docker image prune -f
