@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from app.models import load_model
 from app.predict import predict_image, preprocess_image
@@ -42,7 +43,4 @@ async def predict( library_name : str = Form(...), file: UploadFile = File(...))
             "image": image_explanation
         }
     except Exception as e:
-        raise HTTPException(
-            status_code=400, 
-            detail=str(e)
-        )
+        return JSONResponse(status_code=400, content={"message": "Ha ocurrido un error al procesar la petición"})
