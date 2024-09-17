@@ -42,7 +42,7 @@ async def predict(model_name: str = Form(...), library_name: str = Form(...), fi
         return JSONResponse(status_code=400, content={"message" : "El modelo seleccionado no existe"})
 
     # Validar tipo y tamaño del archivo
-    MAX_FILE_SIZE = 5 * 1024 * 1024;
+    MAX_FILE_SIZE = 10 * 1024 * 1024;
     ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/gif", "png", "jpeg", "jpg", "gif"]
 
     if file.content_type not in ALLOWED_TYPES:
@@ -51,7 +51,7 @@ async def predict(model_name: str = Form(...), library_name: str = Form(...), fi
     file_size = await file.read()
 
     if len(file_size) > MAX_FILE_SIZE:
-        return JSONResponse(status_code=400, content={"message" : "El tamaño de la imagen debe ser menor a 5MB"})
+        return JSONResponse(status_code=400, content={"message" : "El tamaño de la imagen debe ser menor a 10MB"})
 
     file.file.seek(0)
 
