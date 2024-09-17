@@ -195,7 +195,12 @@ export const FormClient = ({ models, libraries }) => {
 					<div className="sm:col-span-4"> 
 						<label className="block">
 							Selecciona una librería de explicabilidad&nbsp;&nbsp;
-							<span title="Los resultados se muestran como un mapa de calor que indica qué partes de la imagen son más importantes para la predicción del modelo, resaltando en colores más cálidos las áreas clave.">&#x2139;</span>
+							<span
+								className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10"
+								title="Los resultados se muestran como un mapa de calor que indica qué partes de la imagen son más importantes para la predicción del modelo, resaltando en colores más cálidos las áreas clave."
+							>
+								Ver Información
+							</span>
 						</label>
 						<select
 							id="library"
