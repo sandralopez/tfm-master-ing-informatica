@@ -26,8 +26,5 @@ jobs:
 
       - name: Run docker-compose
         working-directory: .
-        env:
-          API_KEY=${{ secrets.API_KEY }}
-          API_HOST=${{ secrets.API_HOST }}
         run: |
-          docker-compose up -d
+          API_KEY=${{ secrets.API_KEY }} API_HOST=${{ secrets.API_HOST }} docker-compose up -d
