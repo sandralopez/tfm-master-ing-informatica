@@ -13,6 +13,7 @@ export const FormClient = ({ models, libraries }) => {
 	const [isAccordionOpen, setIsAccordionOpen] = useState([]);
 	const [dragging, setDragging] = useState(false);
 	const [errors, setErrors] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleModelChange = (e) => {
 		const selectedModel = e.target.value;
@@ -109,6 +110,8 @@ export const FormClient = ({ models, libraries }) => {
 		formData.append('library', libraryName);
 		formData.append('file', file);
 
+		setIsLoading(true);
+
 		try {
 			const response = await fetch('/api/submitForm', {
 				method: 'POST',
@@ -124,8 +127,11 @@ export const FormClient = ({ models, libraries }) => {
 			else {
 				setErrors([data.message])
 			}
+
+			setIsLoading(false);
 		}
 		catch(error) {
+			setIsLoading(false);
 			setErrors(['Ha ocurrido un error al enviar los datos: ' + error]);
 		}
 	};
@@ -268,6 +274,13 @@ export const FormClient = ({ models, libraries }) => {
 					</div>
 				</div> {/* Fin de la primera columna */}
 				<div className="mt-4"> {/* Inicio de la segunda columna */}
+					{
+						isLoading && (
+							<>
+								<span className="animate-pulse delay-75 font-semibold text-xl">Cargando...</span>
+							</>
+						)
+					}
 					{
 						resultData?.map((data, index) => (
 							<div key={index} className="mt-4">
