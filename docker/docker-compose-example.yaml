@@ -8,9 +8,9 @@ services:
     ports:
       - '3000:3000'
     environment:
-      - NODE_ENV=
-      - API_KEY=
-      - API_HOST=
+      - NODE_ENV=production
+      - API_KEY=$API_KEY
+      - API_HOST=$API_HOST
     command: npm run start
     depends_on:
       - tfm_bff
@@ -24,7 +24,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - API_KEY=
+      - API_KEY=$API_KEY
     restart: always
   tf_cats_vs_dogs:
     build:
@@ -32,8 +32,10 @@ services:
       dockerfile: Dockerfile
     image: tf-cats-vs-dogs:latest
     container_name: tf_cats_vs_dogs
+    volume:
+      - /home/app/models/tf-cats-vs-dogs.h5:/models
     environment:
-      - MODEL_PATH=
+      - MODEL_PATH=/models/tf-cats-vs-dogs.h5
     restart: always
   tf_mnist_digits:
     build:
@@ -41,8 +43,10 @@ services:
       dockerfile: Dockerfile
     image: tf-mnist-digits:latest
     container_name: tf_mnist_digits
+    volume:
+      - /home/app/models/mnist.h5:/models
     environment:
-      - MODEL_PATH=
+      - MODEL_PATH=/models/mnist.h5
     restart: always
   torch_cats_vs_dogs:
     build:
@@ -50,8 +54,10 @@ services:
       dockerfile: Dockerfile
     image: torch-cats-vs-dogs:latest
     container_name: torch_cats_vs_dogs
+    volume:
+      - /home/app/models/torch-cats-vs-dogs.pth:/models
     environment:
-      - MODEL_PATH=
+      - MODEL_PATH=/models/torch-cats-vs-dogs.pth
     restart: always
   torch_mnist_digits:
     build:
@@ -59,8 +65,10 @@ services:
       dockerfile: Dockerfile
     image: torch-mnist-digits:latest
     container_name: torch_mnist_digits
+    volume:
+      - /home/app/models/torch-mnist-digits.pth:/models
     environment:
-      - MODEL_PATH=
+      - MODEL_PATH=/models/torch-mnist-digits.pth
     restart: always
   tf_transfer_learning_cats_vs_dogs:
     build:
@@ -68,6 +76,8 @@ services:
       dockerfile: Dockerfile
     image: tf-transfer-learning-cats-vs-dogs:latest
     container_name: tf_transfer_learning_cats_vs_dogs
+    volume:
+      - /home/app/models/cats-vs-dogs-resnet50.h5:/models
     environment:
-      - MODEL_PATH=
+      - MODEL_PATH=/models/cats-vs-dogs-resnet50.h5
     restart: always
