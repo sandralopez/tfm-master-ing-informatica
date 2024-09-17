@@ -16,6 +16,7 @@ jobs:
 
       - name: Copy docker-compose
         working-directory: .
+        run: |
           cp docker/docker-compose-example.yaml ./docker-compose.yaml
 
       - name: Stop and remove existing containers
