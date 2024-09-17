@@ -19,12 +19,7 @@ jobs:
         run: |
           cp docker/docker-compose-example.yaml ./docker-compose.yaml
 
-      - name: Stop and remove existing containers
-        working-directory: .
-        run: |
-          docker-compose down
-
       - name: Run docker-compose
         working-directory: .
         run: |
-          API_KEY=${{ secrets.API_KEY }} API_HOST=${{ secrets.API_HOST }} docker-compose up -d
+          API_KEY=${{ secrets.API_KEY }} API_HOST=${{ secrets.API_HOST }} docker-compose up -d --build
