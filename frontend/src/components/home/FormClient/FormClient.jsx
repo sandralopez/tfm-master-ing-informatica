@@ -268,7 +268,8 @@ export const FormClient = ({ models, libraries }) => {
 					<div className="text-center py-6">
 					<input 
 						type="submit" 
-						className="rounded-2xl bg-violet-500 text-white py-2.5 px-3.5" 
+						disabled={isLoading}
+						className={`rounded-2xl text-white py-2.5 px-3.5 ${isLoading ? 'bg-violet-300 cursor-not-allowed' : 'bg-violet-500 hover:bg-violet-700 cursor-pointer'}`}
 						value="Aplicar"
 					/>
 					</div>
