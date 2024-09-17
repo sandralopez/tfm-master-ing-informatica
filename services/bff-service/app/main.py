@@ -1,11 +1,14 @@
 from fastapi import FastAPI, HTTPException, File, UploadFile, Form, Header
 from fastapi.responses import JSONResponse, Response
 from typing import List
+from PIL import Image
 from app.schemas import PredictionResponse, FrontModel, FrontLibrary
 from dotenv import load_dotenv
+
 import httpx
 import json
 import os
+import io
 
 app = FastAPI()
 app.title = "ExplAIn API"
@@ -54,6 +57,22 @@ async def predict(model_name: str = Form(...), library_name: str = Form(...), fi
 
     # Obtener el modelo seleccionado
     model = config["models"][model_name]
+
+    # Comprobar si la imagen tiene transparencia
+    image = Image.open(file.file)
+
+    image_type = image.format
+
+    if image.mode == 'RGBA':
+        image = image.convert('RGB')
+
+    img_byte_arr = io.BytesIO()
+
+    image.save(img_byte_arr, format=image_type)
+
+    img_byte_arr.seek(0)
+
+    file.file = img_byte_arr
 
     # Llamar al servicio correspondiente
     async with httpx.AsyncClient(timeout=60.0) as client:
