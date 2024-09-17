@@ -14,10 +14,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Run docker-compose
+      - name: Copy docker-compose
+        working-directory: .
+          cp docker/docker-compose-example.yaml ./docker-compose.yaml
+
+      - name: Stop and remove existing containers
         working-directory: .
         run: |
-          cp docker/docker-compose-example.yaml ./docker-compose.yaml
-          export API_KEY=${{ secrets.API_KEY }}
-          export API_HOST=${{ secrets.API_HOST }}
+          docker-compose down
+
+      - name: Run docker-compose
+        working-directory: .
+        env:
+          API_KEY=${{ secrets.API_KEY }}
+          API_HOST=${{ secrets.API_HOST }}
+        run: |
           docker-compose up -d

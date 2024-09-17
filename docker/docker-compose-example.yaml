@@ -33,7 +33,7 @@ services:
     image: tf-cats-vs-dogs:latest
     container_name: tf_cats_vs_dogs
     volumes:
-      - /home/app/models/tf-cats-vs-dogs.h5:/models
+      - /home/app/models/tf-cats-vs-dogs.h5:/models/tf-cats-vs-dogs.h5
     environment:
       - MODEL_PATH=/models/tf-cats-vs-dogs.h5
     restart: always
@@ -44,7 +44,7 @@ services:
     image: tf-mnist-digits:latest
     container_name: tf_mnist_digits
     volumes:
-      - /home/app/models/mnist.h5:/models
+      - /home/app/models/mnist.h5:/models/mnist.h5
     environment:
       - MODEL_PATH=/models/mnist.h5
     restart: always
@@ -55,7 +55,7 @@ services:
     image: torch-cats-vs-dogs:latest
     container_name: torch_cats_vs_dogs
     volumes:
-      - /home/app/models/torch-cats-vs-dogs.pth:/models
+      - /home/app/models/torch-cats-vs-dogs.pth:/models/torch-cats-vs-dogs.pth
     environment:
       - MODEL_PATH=/models/torch-cats-vs-dogs.pth
     restart: always
@@ -66,7 +66,7 @@ services:
     image: torch-mnist-digits:latest
     container_name: torch_mnist_digits
     volumes:
-      - /home/app/models/torch-mnist-digits.pth:/models
+      - /home/app/models/torch-mnist-digits.pth:/models/torch-mnist-digits.pth
     environment:
       - MODEL_PATH=/models/torch-mnist-digits.pth
     restart: always
@@ -77,7 +77,7 @@ services:
     image: tf-transfer-learning-cats-vs-dogs:latest
     container_name: tf_transfer_learning_cats_vs_dogs
     volumes:
-      - /home/app/models/cats-vs-dogs-resnet50.h5:/models
+      - /home/app/models/cats-vs-dogs-resnet50.h5:/models/cats-vs-dogs-resnet50.h5
     environment:
       - MODEL_PATH=/models/cats-vs-dogs-resnet50.h5
     restart: always
